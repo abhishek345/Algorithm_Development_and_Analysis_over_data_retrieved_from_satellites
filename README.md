@@ -1,0 +1,2 @@
+# Algorithm_Development_and_Analysis_over_data_retrieved_from_satellites
+Data Analysis and algorithm development to convert complex satellite data into user friendly manner

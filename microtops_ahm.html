@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<html>
+    <head>
+        <title>PRL</title>
+        <link rel="stylesheet" href="microtops_ahm.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+        
+    <body onload="load()">
+        <table id="table_header" >
+            <tr>
+                <td width="25%"><img id="image_prl" src="images/logo_prl.jpg"></td>
+                <td width="50%"><center><h1 id="header_name">Ozone Data Analysis</h1></center></td>
+                <td width="25%"><img id="image_college" src="images/logo_manipal.jpg"></td>
+            </tr>
+        </table>
+
+        <center><h3 id="subheader_text">Distribution of the Parameter at Ahmedabad</h3></center>
+        
+        <table id="table_content" style="margin-left:16.5vw; padding-top: 1vw" >
+            <b>
+                <tr>
+                    <td id="column1">Select Parameter:</td>
+                    <td colspan="2" id="column2">
+                        <select id="box_long" class="parameter" name="dropdown_parameter" required>
+                        <option value="-1" disabled selected>Select Parameter</option>
+                        <option value="ozone">Ozone</option>
+                        <option value="aerosol">Aerosol</option>
+                        <option value="water_vapour">Water Vapour</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="column1">Select Date:</td>
+                    <td id="column2">
+                        <input type="radio" name="date" class="radiocheckm" value="monthly" onclick="dodikha()"><label id="tex">Monthly</label>
+                        <input type="radio" name="date" class="radiocheckd" value="daily" onclick="teendikha()"><label id="tex">Daily</label>
+                    </td>
+                    <td id="column2">
+                        <select id="box_short1" name="selectyear" class="cyear" required>
+                        <option value="2016" selected>2016</option>
+                        </select>
+                        <select id="box_short1" name="selectmonth" class="cmonth" onchange="popday()">
+                        <option value="-1" selected disabled>Month</option>
+                        <option value="January">Jan</option>
+                        <option value="February">Feb</option>
+                        <option value="March">Mar</option>
+                        </select>
+                        <select id="box_short1" name="selectday" hidden="true" class="cday"></select>
+                    </td>
+                </tr>
+                <tr>
+                   <td id="column1" colspan="3"><input type="submit" name="action" value="Submit" id="button" onclick="checkform()" /></td>
+                </tr>
+                <tr>
+                    <td colspan="3"><div id="div_output"><img id="div_output" class="img_out" src="" alt=""></div></td>
+                </tr>
+                
+            </b>
+        </table>
+        <script>
+            function load()
+            {
+                if(document.getElementsByClassName("radiocheckm")[0].checked===true)
+                {
+                    dodikha();
+                }
+                else if(document.getElementsByClassName("radiocheckd")[0].checked===true)
+                {
+                    teendikha();
+                    popday();
+                }
+            }
+            function dodikha()
+            {
+                document.getElementsByClassName("cday")[0].hidden=true;
+            }
+            function teendikha()
+            {
+                document.getElementsByClassName("cday")[0].hidden=false;
+                popday();
+            }
+            function popday()
+            {
+                var sel = document.getElementsByClassName("cmonth")[0];
+                var selectedValue = sel.options[sel.selectedIndex].value;
+                if(selectedValue.toString().localeCompare("-1") === 0)
+                    return;
+                var len = 0;
+                switch(selectedValue.toString())
+                {
+                    case "January":   len = 31;   break;
+                    case "March":   len = 31;   break;
+                    case "May":   len = 31;   break;
+                    case "July":   len = 31;   break;
+                    case "August":   len = 31;   break;
+                    case "October":  len = 31;   break;
+                    case "December":  len = 31;   break;
+                    default:    len = 30;   break;
+                }
+                if(selectedValue.toString().localeCompare("February") === 0)
+                {
+                    var tempsel = document.getElementsByClassName("cyear")[0];
+                    var selectedValue = tempsel.options[tempsel.selectedIndex].value;
+                    selectedValue = parseInt(selectedValue);
+                    if(selectedValue % 4 === 0)
+                    {
+                        if(selectedValue % 100 === 0)
+                        {   
+                            if(selectedValue % 400 === 0)
+                                len = 29;
+                            else
+                                len = 28;
+                        }
+                        else
+                            len = 29;
+                    }
+                    else
+                        len = 28;
+                }
+
+                var sel = document.getElementsByClassName('cday')[0];
+                sel.options.length = 0;
+                var opt = document.createElement('option');
+                opt.innerHTML="Day";
+                opt.value="-1";
+                opt.selected=true;
+                opt.disabled=true;
+                sel.appendChild(opt);
+                for(var i = 1; i <= len; i++)
+                {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = i.toString();
+                    opt.value = i.toString();
+                    sel.appendChild(opt);
+                }
+            }
+            function checkform()
+            {
+                var p,ps,par,mon,dat='';
+                p = document.getElementsByClassName("parameter")[0];
+                ps = p.options[p.selectedIndex].value;
+                par = ps;
+                //alert(par);
+                if(ps.toString().localeCompare("-1")===0)
+                {
+                    event.preventDefault();
+                    alert('Parameter not selected!!');
+                    return false;
+                }
+                
+                var cm = document.getElementsByClassName("radiocheckm")[0].checked;
+                var cd = document.getElementsByClassName("radiocheckd")[0].checked;
+                if(cm===true || cd===true)
+                {
+                    if(cm === true)
+                    {
+                        p = document.getElementsByClassName("cmonth")[0];
+                        ps = p.options[p.selectedIndex].value;
+                        mon = ps;
+                        if(ps.toString().localeCompare("-1")===0)
+                        {
+                            event.preventDefault();
+                            alert('Month not selected!!');
+                            return false;
+                        }
+                    }
+                    else if(cd === true)
+                    {
+                        p = document.getElementsByClassName("cmonth")[0];
+                        ps = p.options[p.selectedIndex].value;
+                        mon = ps;
+                        if(ps.toString().localeCompare("-1")===0)
+                        {
+                            event.preventDefault();
+                            alert('Month not selected!!');
+                            return false;
+                        }
+                        p = document.getElementsByClassName("cday")[0];
+                        ps = p.options[p.selectedIndex].value;
+                        dat = ps;
+                        if(ps.toString().localeCompare("-1")===0)
+                        {
+                            event.preventDefault();
+                            alert('Day not selected!!');
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    event.preventDefault();
+                    alert('Date Range not selected!!');
+                    return false;
+                }
+                var x ='microtops_ahm/2016'+mon.toString()+dat.toString()+'_'+par.toString()+'.png';
+                document.getElementsByClassName("img_out")[0].src=x;
+                document.getElementsByClassName("img_out")[0].alt="Data not available";
+            }
+        </script>
+    </body>
+</html>

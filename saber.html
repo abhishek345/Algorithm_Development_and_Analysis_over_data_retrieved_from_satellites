@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>PRL</title>
+        <link rel="stylesheet" href="saber.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+
+    <body onload="load()">
+        <form action="Saber_servlet" method="post" onsubmit="checkform()">
+        <table id="table_header" >
+            <tr>
+                <td width="25%"><img id="image_prl" src="images/logo_prl.jpg"></td>
+                <td width="50%"><center><h1 id="header_name">Ozone Data Analysis</h1></center></td>
+                <td width="25%"><img id="image_college" src="images/logo_manipal.jpg"></td>
+            </tr>
+        </table>
+        
+        <center><h3 id="subheader_text">SABER SATELLITE</h3></center>
+        <input type="hidden" name="satellite" value="saber" />
+        
+        <div id="map"></div>
+        <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script>
+            //Define your locations: HTML content for the info window, latitude, longitude
+            var locations = [
+                ['<h4>Ahmedabad</h4>','23.0300','72.5800'],
+                ['<h4>Hyderabad</h4>','17.3700','78.4800'],
+                ['<h4>Dibrugarh</h4>', '27.4800','95.000000'],
+                ['<h4>New Delhi</h4>', '28.6139','77.2090'],
+                ['<h4>Chennai</h4>','13.0827','80.2707'],
+                ['<h4>Bengaluru</h4>', '12.9667','77.5667'],
+                ['<h4>Kolkata</h4>','22.5667','88.3667'],
+                ['<h4>Mumbai</h4>', '18.9750','72.8258'],
+                ['<h4>Pune</h4>', '18.5203','73.8567'],
+                ['<h4>Srinagar</h4>','34.0900','74.7900'],
+                ['<h4>Trivandrum</h4>','8.4875','76.9525'],
+                ['<h4>Amsterdam</h4>','52.3667','4.9000'],
+                ['<h4>Athens</h4>','37.9667','23.7167'],
+                ['<h4>Atlantic City</h4>','39.3773','-74.4511'],
+                ['<h4>Bangkok</h4>','13.7563','100.5018'],
+                ['<h4>Beijing</h4>', '39.9167','116.3833'],
+                ['<h4>Canberra</h4>','-35.3075','149.1244'],
+                ['<h4>Cannes</h4>', '43.5513','7.0128'],
+                ['<h4>Cape Town</h4>','-33.9253','18.4239' ],
+                ['<h4>Chicago</h4>','41.8369','-87.6847'],
+                ['<h4>Hong Kong</h4>', '22.2783','114.1747'],
+                ['<h4>London</h4>', '51.5072','-0.1275'],
+                ['<h4>Los Angeles</h4>','34.0500','-118.2500'],
+                ['<h4>Madrid</h4>', '40.4000','-3.7167'],
+                ['<h4>Melbourne</h4>','-37.8136','144.9631' ],
+                ['<h4>Munich</h4>','48.1333','11.5667'],
+                ['<h4>New York</h4>','40.7127','-74.0059'],
+                ['<h4>Paris</h4>', '48.8567','2.3508'],
+                ['<h4>San Francisco</h4>','37.783','-122.4167'],
+                ['<h4>Shanghai</h4>','31.200','121.5000'],
+                ['<h4>Sydney</h4>','-33.8650','151.2094' ],
+                ['<h4>Tokyo</h4>','35.6833','139.6833'],
+                ['<h4>Toronto</h4>', '43.7000','-79.4000'],
+                ['<h4>Washington</h4>','38.9047','-77.0164'],
+                ['<h4>Moscow </h4>','55.7500','37.6167'],
+                ['<h4>Cairo</h4>','30.0500','31.2333'],
+                ['<h4>Rio de Janeiro</h4>','-22.9068','-43.1729'],
+                ['<h4>Istanbul</h4>', '41.0136','28.9550']
+            ];
+            //Setup the different icons and shadows
+            var iconURLPrefix = 'http://maps.google.com/mapfiles/ms/icons/';
+            var icons = [
+                iconURLPrefix + 'red-dot.png'
+                //iconURLPrefix + 'green-dot.png',
+                //iconURLPrefix + 'blue-dot.png',
+                //iconURLPrefix + 'orange-dot.png',
+                //iconURLPrefix + 'purple-dot.png',
+                //iconURLPrefix + 'pink-dot.png',      
+                //iconURLPrefix + 'yellow-dot.png'
+            ];
+            var iconsLength = icons.length;
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 1,
+                center: new google.maps.LatLng(0,0),
+                draggable: true,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                mapTypeControl: false,
+                streetViewControl: true,
+                panControl: false,
+                zoomControlOptions: {
+                    position: google.maps.ControlPosition.RIGHT_BOTTOM
+                }
+            });
+            var infowindow = new google.maps.InfoWindow({
+                maxWidth: 160
+            });
+            var markers = new Array();
+            var iconCounter = 0;
+            //Add the markers and infowindows to the map
+            for (var i = 0; i < locations.length; i++) {  
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                    map: map,
+                    icon: icons[iconCounter],
+                    animation: google.maps.Animation.DROP
+                });
+                //static marker color change and selection of lat long
+                markers.push(marker);
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    return function() {
+                        marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+                        infowindow.setContent(locations[i][0]);
+                        infowindow.open(map, marker);
+                        var lat = locations[i][1];
+                        var long = locations[i][2];
+                        document.getElementById('txt_lat').value=lat;
+                        document.getElementById('txt_long').value=long;
+                        setTimeout(function(){
+                            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
+                        }, 1500);
+                    }         
+                })(marker, i));
+                iconCounter++;
+                //We only have a limited number of possible icon colors, so we may have to restart the counter
+                if(iconCounter >= iconsLength) {
+                    iconCounter = 0;
+                }
+            }
+
+            //dynamic mapping of the marker and location
+            var markersArray = [];
+            //add a click event handler to the map object
+            google.maps.event.addListener(map, "click", function(event)
+            {
+                //place a marker
+                placeMarker(event.latLng);
+                //display the lat/lng in your form's lat/lng fields
+                document.getElementById('txt_lat').value = event.latLng.lat();
+                document.getElementById('txt_long').value = event.latLng.lng();
+            });
+            function placeMarker(location) {
+                //first remove all markers if there are any
+                deleteOverlays();
+                var marker = new google.maps.Marker({
+                    position: location, 
+                    map: map,
+                    animation: google.maps.Animation.DROP,
+                });
+                //add marker in markers array
+                markersArray.push(marker);
+                //change the color of the marker
+                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png');
+                var info_win_dyn = new google.maps.InfoWindow({
+                    content: '<p>Latitude:'+ marker.getPosition().lat()+'<p> Longitude:'+marker.getPosition().lng()
+                });
+                info_win_dyn.open(map,marker);
+                //change the color of the marker
+                setTimeout(function(){
+                    marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+                }, 1500);
+
+                //position132: place.geometry.location;
+                //infowindow.setContent(place.name+':hello');
+                //infowindow.open(map, marker);
+                //map.setCenter(location);
+            }  
+            //Deletes all markers in the array by removing references to them
+            function deleteOverlays() {
+                if (markersArray) {
+                    for (i in markersArray) {
+                        markersArray[i].setMap(null);
+                    }
+                    markersArray.length = 0;
+                }   
+            }
+            //auto center bound 
+            function autoCenter() {
+                //Create a new viewpoint bound
+                var bounds = new google.maps.LatLngBounds();
+                //Go through each...
+                for (var i = 0; i < markers.length; i++) {  
+                    bounds.extend(markers[i].position);
+                }
+                //Fit these bounds to the map
+                map.fitBounds(bounds);
+            }
+            autoCenter();
+        </script>
+    
+        <table id="table_content" style="margin-left:16.5vw; padding-top: 1vw" >
+            <b>
+                <tr>
+                    <td id="column1">Select Parameter:</td>
+                    <td colspan="2" id="column2">
+                        <select id="box_long" class="parameter" name="dropdown_parameter" required>
+                        <option value="-1" disabled selected>Select Parameter</option>
+                        <option value="ozone">Ozone</option>
+                        <option value="temperature">Temperature</option>
+                        <option value="carbondioxide">Carbon Dioxide</option>
+                        </select>
+                    </td>
+                    <!--<td rowspan="5"><div id="div_output" ><img id="image_output" src="images/data.png"></div></td>-->
+                </tr>
+                
+                <tr>
+                    <td id="column1">Select Date:</td>
+                    <td id="column2">
+                        <input type="radio" name="date" class="radiochecky1" value="interyearly" onclick="yeardikha()"><label id="tex">Inter-Yearly</label>
+                        <input type="radio" name="date" class="radiochecky" value="yearly" onclick="ekdikha()"><label id="tex">Yearly</label>
+                        <input type="radio" name="date" class="radiocheckm" value="monthly" onclick="dodikha()"><label id="tex">Monthly</label>
+                        <input type="radio" name="date" class="radiocheckd" value="daily" onclick="teendikha()"><label id="tex">Daily</label>
+                    </td>
+                    <td id="column2">
+                        <select id="box_short1" name="selectyear" class="cyear" onchange="popmonth()" required>
+                        <option value="-1" selected disabled>Year</option>
+                        <option value="2002">2002</option>
+                        <option value="2003">2003</option>
+                        <option value="2004">2004</option>
+                        <option value="2005">2005</option>
+                        <option value="2006">2006</option>
+                        <option value="2007">2007</option>
+                        <option value="2008">2008</option>
+                        <option value="2009">2009</option>
+                        <option value="2010">2010</option>
+                        <option value="2011">2011</option>
+                        <option value="2012">2012</option>
+                        <option value="2013">2013</option>
+                        <option value="2014">2014</option>
+                        <option value="2015">2015</option>
+                        <option value="2016">2016</option>
+                        </select>
+                        <select id="box_short1" name="selectyear1" class="cyear1" hidden="true" class="cyear1">
+                        <option value="-1" selected disabled>Year</option>
+                        <option value="2002">2002</option>
+                        <option value="2003">2003</option>
+                        <option value="2004">2004</option>
+                        <option value="2005">2005</option>
+                        <option value="2006">2006</option>
+                        <option value="2007">2007</option>
+                        <option value="2008">2008</option>
+                        <option value="2009">2009</option>
+                        <option value="2010">2010</option>
+                        <option value="2011">2011</option>
+                        <option value="2012">2012</option>
+                        <option value="2013">2013</option>
+                        <option value="2014">2014</option>
+                        <option value="2015">2015</option>
+                        <option value="2016">2016</option>
+                        </select>
+                        <select id="box_short1" name="selectmonth" hidden="true" class="cmonth" onchange="popday()"></select>
+                        <select id="box_short1" name="selectday" hidden="true" class="cday"></select>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td id="column1">Select Latitude:</td>	
+                    <td colspan="2" id="column2"><input id="txt_lat" type="number" class="clat" name="latitude" step="any" required /></td>
+                </tr>
+
+                <tr>
+                    <td id="column1">Select Longitude:</td>
+                    <td colspan="2" id="column2"><input id="txt_long" type="number" class="clong" name="longitude" step="any" required /></td>
+                </tr>
+                
+                <tr>
+                    <td id="column1">Select Plot:</td>
+                    <td id="column2" colspan="2">
+                    <select id="box_long" name="dropdown_plot" class="cplot">
+                    <option value="-1" selected disabled>Select Plot</option>
+                    <option value="lineplot">Line Plot</option>
+                    <option value="contourplot">Contour Plot</option>
+                    </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td id="column1"><input type="submit" name="action" value="Plot Data" id="button" /></td>
+                    <td id="column2"><input type="submit" name="action" value="Save ASCII" id="button" /></td>
+                </tr>
+            </b>
+        </table>
+        
+        <script>
+            function yeardikha()
+            {
+                document.getElementsByClassName("cyear")[0].hidden=false;
+                document.getElementsByClassName("cyear1")[0].hidden=false;
+                document.getElementsByClassName("cmonth")[0].hidden=true;
+                document.getElementsByClassName("cday")[0].hidden=true;
+            }    
+            function ekdikha()
+            {
+                document.getElementsByClassName("cyear")[0].hidden=false;
+                document.getElementsByClassName("cyear1")[0].hidden=true;
+                document.getElementsByClassName("cmonth")[0].hidden=true;
+                document.getElementsByClassName("cday")[0].hidden=true;
+            }
+            function dodikha()
+            {
+                document.getElementsByClassName("cyear")[0].hidden=false;
+                document.getElementsByClassName("cyear1")[0].hidden=true;
+                document.getElementsByClassName("cmonth")[0].hidden=false;
+                document.getElementsByClassName("cday")[0].hidden=true;
+                popmonth();
+            }
+            function teendikha()
+            {
+                document.getElementsByClassName("cyear")[0].hidden=false;
+                document.getElementsByClassName("cyear1")[0].hidden=true;
+                document.getElementsByClassName("cmonth")[0].hidden=false;
+                document.getElementsByClassName("cday")[0].hidden=false;
+                popmonth();
+                popday();
+            }
+            function popmonth()
+            {
+                var sel = document.getElementsByClassName("cyear")[0];
+                var selectedValue = sel.options[sel.selectedIndex].value;
+                if(selectedValue.toString().localeCompare("-1") === 0)
+                    return;
+                var str = '2016';
+                var cmp = selectedValue.toString().localeCompare(str.toString());
+                var monthname = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+                if(cmp === 0)
+                    var month = ["Jan","Feb"];
+                else
+                    var month = ["Jan","Feb","Mar","Apr","May","June","July","Aug","Sept","Oct","Nov","Dec"];
+                var len = month.length;
+                var sel = document.getElementsByClassName('cmonth')[0];
+                if(sel.options.length===13 && cmp !== 0)
+                    return;
+                sel.options.length = 0;
+                var opt = document.createElement('option');
+                opt.innerHTML="Month";
+                opt.value="-1";
+                opt.selected=true;
+                opt.disabled=true;
+                sel.appendChild(opt);
+                for(var i = 1; i <= len; i++)
+                {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = month[i-1].toString();
+                    opt.value = monthname[i-1].toString();
+                    sel.appendChild(opt);
+                }
+            }
+            function popday()
+            {
+                var sel = document.getElementsByClassName("cmonth")[0];
+                var selectedValue = sel.options[sel.selectedIndex].value;
+                if(selectedValue.toString().localeCompare("-1") === 0)
+                    return;
+                var len = 0;
+                switch(selectedValue.toString())
+                {
+                    case "January":   len = 31;   break;
+                    case "March":   len = 31;   break;
+                    case "May":   len = 31;   break;
+                    case "July":   len = 31;   break;
+                    case "August":   len = 31;   break;
+                    case "October":  len = 31;   break;
+                    case "December":  len = 31;   break;
+                    default:    len = 30;   break;
+                }
+                if(selectedValue.toString().localeCompare("February") === 0)
+                {
+                    var tempsel = document.getElementsByClassName("cyear")[0];
+                    var selectedValue = tempsel.options[tempsel.selectedIndex].value;
+                    selectedValue = parseInt(selectedValue);
+                    if(selectedValue % 4 === 0)
+                    {
+                        if(selectedValue % 100 === 0)
+                        {   
+                            if(selectedValue % 400 === 0)
+                                len = 29;
+                            else
+                                len = 28;
+                        }
+                        else
+                            len = 29;
+                    }
+                    else
+                        len = 28;
+                }
+
+                var sel = document.getElementsByClassName('cday')[0];
+                sel.options.length = 0;
+                var opt = document.createElement('option');
+                opt.innerHTML="Day";
+                opt.value="-1";
+                opt.selected=true;
+                opt.disabled=true;
+                sel.appendChild(opt);
+                for(var i = 1; i <= len; i++)
+                {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = i.toString();
+                    opt.value = i.toString();
+                    sel.appendChild(opt);
+                }
+            }
+            function load()
+            {
+                if(document.getElementsByClassName("radiochecky1")[0].checked===true)
+                    yeardikha();
+                else if(document.getElementsByClassName("radiochecky")[0].checked===true)
+                    eddikha();
+                else if(document.getElementsByClassName("radiocheckm")[0].checked===true)
+                {
+                    dodikha();
+                    popmonth();
+                }
+                else if(document.getElementsByClassName("radiocheckd")[0].checked===true)
+                {
+                    teendikha();
+                    popmonth();
+                    popday();
+                }
+            }
+            function checkform()
+            {
+                var p,ps;
+                p = document.getElementsByClassName("parameter")[0];
+                ps = p.options[p.selectedIndex].value;
+                if(ps.toString().localeCompare("-1")===0)
+                {
+                    event.preventDefault();
+                    alert('Parameter not selected!!');
+                    return false;
+                }
+                var cy1 = document.getElementsByClassName("radiochecky1")[0].checked;
+                var cy = document.getElementsByClassName("radiochecky")[0].checked;
+                var cm = document.getElementsByClassName("radiocheckm")[0].checked;
+                var cd = document.getElementsByClassName("radiocheckd")[0].checked;
+                if(cy1===true || cy===true || cm===true || cd===true)
+                {
+                    p = document.getElementsByClassName("cyear")[0];
+                    ps = p.options[p.selectedIndex].value;
+                    if(ps.toString().localeCompare("-1")===0)
+                    {
+                        event.preventDefault();
+                        alert('Year not selected!!');
+                        return false;
+                    }
+                    if(cy1 === true)
+                    {
+                        p1 = document.getElementsByClassName("cyear1")[0];
+                        ps1 = p1.options[p1.selectedIndex].value;
+                        if(ps1.toString().localeCompare("-1")===0)
+                        {
+                            event.preventDefault();
+                            alert('Year not selected!!');
+                            return false;
+                        }
+                        else if( parseInt(ps) >= parseInt(ps1) )
+                        {
+                            event.preventDefault();
+                            alert('Year range not correct!!');
+                            return false;
+                        }
+                    }
+                    else if(cm === true)
+                    {
+                        p = document.getElementsByClassName("cmonth")[0];
+                        ps = p.options[p.selectedIndex].value;
+                        if(ps.toString().localeCompare("-1")===0)
+                        {
+                            event.preventDefault();
+                            alert('Month not selected!!');
+                            return false;
+                        }
+                    }
+                    else if(cd === true)
+                    {
+                        p = document.getElementsByClassName("cmonth")[0];
+                        ps = p.options[p.selectedIndex].value;
+                        if(ps.toString().localeCompare("-1")===0)
+                        {
+                            event.preventDefault();
+                            alert('Month not selected!!');
+                            return false;
+                        }
+                        p = document.getElementsByClassName("cday")[0];
+                        ps = p.options[p.selectedIndex].value;
+                        if(ps.toString().localeCompare("-1")===0)
+                        {
+                            event.preventDefault();
+                            alert('Day not selected!!');
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    event.preventDefault();
+                    alert('Date Range not selected!!');
+                    return false;
+                }
+                p = document.getElementsByClassName("cplot")[0];
+                ps = p.options[p.selectedIndex].value;
+                if(ps.toString().localeCompare("-1")===0)
+                {
+                    event.preventDefault();
+                    alert('Plot not selected!!');
+                    return false;
+                }
+            }
+        </script>
+        </form>
+    </body>
+</html>

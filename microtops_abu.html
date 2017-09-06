@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>PRL</title>
+        <link rel="stylesheet" href="microtops_abu.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+        
+    <body>
+        <table id="table_header">
+            <tr>
+                <td width="25%"><img id="image_prl" src="images/logo_prl.jpg"></td>
+                <td width="50%"><center><h1 id="header_name">Ozone Data Analysis</h1></center></td>
+                <td width="25%"><img id="image_college" src="images/logo_manipal.jpg"></td>
+            </tr>
+        </table>
+
+        <center><h3 id="subheader_text">Vertical Distribution of various parameters at Mt.Abu</h3></center>
+        <div id="map"></div>
+        <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script>
+        //Define your locations: HTML content for the info window, latitude, longitude
+            var locations = [
+                ['<h4>Guru Shikhar</h4><h4>height: 1.7 km above the sea level</h4>','24.646043','72.7787173','Guru Shikhar'],
+                ['<h4>Oriya</h4><h4>height: 1.3 km above the sea level</h4>','24.6242314','72.7300249','Oriya'],
+                ['<h4>Hill View (PRL Guest House at Mt.Abu)</h4><h4>height: 1.1 km above the sea level</h4>', '24.5992271','72.6897947','Hill View'],
+                ['<h4>Mid Way (Between Abu Road and Mount Abu)</h4><h4>height: 0.3 km above the sea level</h4>', '24.5746716','72.7774405','Mid Way'],
+                ['<h4>Abu Road</h4><h4>height: 0.0 km above the sea level</h4>','24.4640731','72.7717775','Abu Road'],
+            ];
+            //Setup the different icons and shadows
+            var iconURLPrefix = 'http://maps.google.com/mapfiles/ms/micons/';
+            var icons = [
+                iconURLPrefix + 'blue-pushpin.png'
+            ];
+            var iconsLength = icons.length;
+            var map = new google.maps.Map(document.getElementById('map'), {
+               
+                zoom: 5,
+                center: new google.maps.LatLng(24.5992271,72.6897947),
+                draggable: true,
+                mapTypeId: google.maps.MapTypeId.TERRAIN,
+                mapTypeControl: true,
+                streetViewControl: true,
+                panControl: true,
+                zoomControlOptions: {
+                    position: google.maps.ControlPosition.RIGHT_BOTTOM
+                }
+            });
+            //alert(map.getTilt(45));
+            var infowindow = new google.maps.InfoWindow({
+                maxWidth: 160
+            });
+            var markers = new Array();
+            var iconCounter = 0;
+            //Add the markers and infowindows to the map
+            for (var i = 0; i < locations.length; i++) {  
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                    map: map,
+                    icon: icons[iconCounter],
+                    animation: google.maps.Animation.DROP
+                });
+                //static marker color change and selection of lat long
+                markers.push(marker);
+                var mm=0;
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    return function() {
+                        marker.setIcon('http://maps.google.com/mapfiles/ms/micons/red-pushpin.png');
+                        infowindow.setContent(locations[i][0]);
+                        infowindow.open(map, marker);
+                        var local = locations[i][3];
+                        if(mm==0)
+                        {
+                           document.getElementById('txt_pla1').value=local;
+                           mm=1;
+                        }
+                        else
+                        {
+                           document.getElementById('txt_pla2').value=local;
+                           mm=0;
+                        }
+                        setTimeout(function(){
+                            marker.setIcon('http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png');
+                        }, 1500);
+                    }         
+                })(marker, i));
+                iconCounter++;
+                //We only have a limited number of possible icon colors, so we may have to restart the counter
+                if(iconCounter >= iconsLength) {
+                    iconCounter = 0;
+                }
+            }
+            //auto center bound 
+            function autoCenter() {
+                //Create a new viewpoint bound
+                var bounds = new google.maps.LatLngBounds();
+                //Go through each...
+                for (var i = 0; i < markers.length; i++) {  
+                    bounds.extend(markers[i].position);
+                }
+                //Fit these bounds to the map
+                map.fitBounds(bounds);
+            }
+            autoCenter();
+        </script>
+        
+        <form action="plot_microtops_abu.html" id="form_id" method="get" onsubmit="checkform()">
+        <table id="table_content" style="margin-left:16.5vw; padding-top: 1vw" >
+            <b>
+                <tr>
+                    <td id="column1">Select Parameter:</td>
+                    <td id="column2">
+                        <select id="box_long" class="parameter" name="dropdown_parameter" required>
+                        <option value="-1" disabled selected>Select Parameter</option>
+                        <option value="ozone">Ozone</option>
+                        <option value="aerosol">Aerosol</option>
+                        <option value="water_vapour">Water Vapour</option>
+                        </select>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td id="column1">Select Date:</td>
+                    <td id="column2">
+                        <select id="box_long" class="date" name="date" required>
+                        <option value="-1" disabled selected>Select Date</option>
+                        <option value="2016March8">8&#x1D57;&#x02B0 March,2016</option>
+                        <option value="2016March9">9&#x1D57;&#x02B0 March,2016</option>
+                        <option value="2016March10">10&#x1D57;&#x02B0 March,2016</option>
+                        </select>
+                    </td>
+                </tr>
+                       
+                <tr>
+                    <td id="column1">Place 1:</td>	
+                    <td id="column2"><input id="txt_pla1" type="text" class="clat" name="place 1" step="any" required /></td>
+                </tr>
+
+                <tr>
+                    <td id="column1">Place 2:</td>
+                    <td id="column2"><input id="txt_pla2" type="text" class="clong" name="place 2" step="any" required /></td>
+                </tr>
+                
+                <tr>
+                    <td id="column1" colspan="2"><input type="submit" name="action" value="Submit" id="button" /></td>
+                </tr>
+            </b>
+        </table>
+        </form>
+        <script>
+            function checkform()
+            {
+                var p,ps;
+                p = document.getElementsByClassName("parameter")[0];
+                ps = p.options[p.selectedIndex].value;
+                if(ps.toString().localeCompare("-1")===0)
+                {
+                    event.preventDefault();
+                    alert('Parameter not selected!!');
+                    return false;
+                }
+                
+                p = document.getElementsByClassName("date")[0];
+                ps = p.options[p.selectedIndex].value;
+                if(ps.toString().localeCompare("-1")===0)
+                {
+                    event.preventDefault();
+                    alert('Date not selected!!');
+                    return false;
+                }
+                if(document.getElementById("txt_pla1").value===document.getElementById("txt_pla2").value)
+                {
+                    event.preventDefault();
+                    alert('Places selected should be different!!');
+                    return false;
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PRL</title>
+        <link rel="stylesheet" href="plot.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    
+    <body onload="chkurl()">
+        <table id="table_header" >
+            <tr>
+                <td width="25%"><img id="image_prl" src="images/logo_prl.jpg"></td>
+                <td width="50%"><center><h1 id="header_name">Ozone Data Analysis</h1></center></td>
+                <td width="25%"><img id="image_college" src="images/logo_manipal.jpg"></td>
+            </tr>
+        </table>
+        
+        <center><h3 id="subheader_text">OUTPUT</h3></center>
+        <br>
+        
+        <table id="output_content" style="margin-left:20.5vw">
+            <tr>
+                <td id="output_box"><img id="image_output" class="img_out" src="" alt=""></td>
+            </tr>
+            <tr>
+                <td style="text-align: center; padding: 1vw 0;">
+                    To view file <a href="" class="ascii" target="_blank">Click here</a>
+                    <br>(Use Right Click + Save as to download the file.)
+                </td>
+            </tr>
+        </table>
+        <script>
+            function chkurl()
+            {
+                var url=location.search.substring(1);
+                var url1=location.hash.substring(1);
+                document.getElementsByClassName("img_out")[0].src=url.toString();
+                document.getElementsByClassName("img_out")[0].alt="Data not available";
+                document.getElementsByClassName("ascii")[0].href=url1.toString();
+            }
+        </script>
+    </body>
+</html>

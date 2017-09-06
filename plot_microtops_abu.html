@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PRL</title>
+        <link rel="stylesheet" href="plot_microtops_abu.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    
+    <body onload="processForm()">
+        <table id="table_header" >
+            <tr>
+                <td width="25%"><img id="image_prl" src="images/logo_prl.jpg"></td>
+                <td width="50%"><center><h1 id="header_name">Ozone Data Analysis</h1></center></td>
+                <td width="25%"><img id="image_college" src="images/logo_manipal.jpg"></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+              <td id="s"><h3 id="subheader_text1">Line Plot</h3></td>
+              <td id="s"><h3 id="subheader_text2">Analysis from the line plot </h3></td>
+            </tr>
+        </table>
+        <table id="output_content">
+            <tr>
+                <td id="output_box"><img id="image_output" class="img_out" src="" alt=""></td>
+                <td id="output_box"><img id="image_output" class="img_out" src="" alt=""></td>
+            </tr>
+        </table>
+        <script language="JavaScript">
+            function processForm()
+            {
+                var parameters = location.search.substring(1).split("&");
+                var temp = parameters[0].split("=");
+                var par = unescape(temp[1]);
+                var temp = parameters[1].split("=");
+                var date = unescape(temp[1]);
+                var x ='microtops_abu/'+date.toString()+'_'+par.toString()+'.png';
+                document.getElementsByClassName("img_out")[0].src=x;
+                document.getElementsByClassName("img_out")[0].alt="Data not available";
+                
+                var temp = parameters[2].split("=");
+                var pla1 = unescape(temp[1]);
+                var temp = parameters[3].split("=");
+                var pla2 = unescape(temp[1]);
+                var x ='microtops_abu/'+date.toString()+'_'+pla1.toString()+'_'+pla2.toString()+'_'+par.toString()+'.png';
+                document.getElementsByClassName("img_out")[1].src=x;
+                document.getElementsByClassName("img_out")[1].alt="Data not available";
+            }
+            processForm();
+        </script>
+    </body>
+</html>

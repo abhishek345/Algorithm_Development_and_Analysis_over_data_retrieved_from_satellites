@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<html>
+    <head>
+        <title>PRL</title>
+        <link rel="stylesheet" href="microtops_abu.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+        
+    <body>
+        <table id="table_header" >
+            <tr>
+                <td width="25%"><img id="image_prl" src="images/logo_prl.jpg"></td>
+                <td width="50%"><center><h1 id="header_name">Ozone Data Analysis</h1></center></td>
+                <td width="25%"><img id="image_college" src="images/logo_manipal.jpg"></td>
+            </tr>
+        </table>
+
+        <center><h3 id="subheader_text">Mount Abu LIDAR</h3></center>
+        
+        <table id="table_content" style="margin-left:16.5vw; padding-top: 1vw" >
+            <b>
+                <!--
+                <tr>
+                    <td id="column1">Select Wavelength:</td>
+                    <td colspan="2" id="column2">
+                        <select id="box_long" class="wavelength" name="dropdown_wavelength" required>
+                        <option value="-1" disabled selected>Select Wavelength</option>
+                        <option value="355">355nm</option>
+                        <option value="532">532nm</option>
+                        <option value="387">387nm (N&#x2082)</option>
+                        <option value="607">607nm (N&#x2082)</option>
+                        <option value="408">408nm (Water Vapour)</option>
+                        </select>
+                    </td>
+                </tr>
+                -->
+                <tr>
+                    <td id="column1">Select Date:</td>
+                    <td colspan="2" id="column2">
+                        <select id="box_long" class="date" name="date" required>
+                        <option value="-1" disabled selected>Select Date</option>
+                        <option value="2016March9">9&#x1D57;&#x02B0 March,2016</option>
+                        <option value="2016March10">10&#x1D57;&#x02B0 March,2016</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="column1">Select Time:</td>
+                    <td colspan="2" id="column2">
+                        <select id="box_long" class="time" name="dropdown_time">
+                        <option value="-1" disabled selected>Select Time</option>
+                        <option value="00">00:00 hrs</option>
+                        <option value="01">01:00 hrs</option>
+                        <option value="02">02:00 hrs</option>
+                        <option value="03">03:00 hrs</option>
+                        <option value="04">04:00 hrs</option>
+                        <option value="05">05:00 hrs</option>
+                        <option value="06">06:00 hrs</option>
+                        <option value="21">21:00 hrs</option>
+                        <option value="22">22:00 hrs</option>
+                        <option value="23">23:00 hrs</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="column1">Select Altitude Range:</td>
+                    <td colspan="2" id="column2">
+                        <select id="box_long" class="alt" name="dropdown_alt" required>
+                        <option value="-1" disabled selected>Select Altitude Range</option>
+                        <option value="30">0-30 km</option>
+                        <option value="100">30-100 km</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="column1" colspan="3"><input type="submit" name="action" value="Submit" id="button" onclick="checkform()" /></td>
+                </tr>
+                <tr>
+                    <td colspan="3"><div id="div_output"><img id="div_output" class="img_out" src="" alt=""></div></td>
+                </tr>
+            </b>
+        </table>
+        <script>
+            function checkform()
+            {
+                var x,p,ps,tim,alt,dat,plot;
+                /*p = document.getElementsByClassName("wavelength")[0];
+                ps = p.options[p.selectedIndex].value;
+                if(ps.toString().localeCompare("-1")===0)
+                {
+                    event.preventDefault();
+                    alert('Wavelength not selected!!');
+                    return false;
+                }*/
+                p = document.getElementsByClassName("date")[0];
+                ps = p.options[p.selectedIndex].value;
+                dat = ps;
+                if(ps.toString().localeCompare("-1")===0)
+                {
+                    event.preventDefault();
+                    alert('Date not selected!!');
+                    return false;
+                }
+                p = document.getElementsByClassName("time")[0];
+                ps = p.options[p.selectedIndex].value;
+                tim = ps;
+                if(ps.toString().localeCompare("-1")===0)
+                {
+                    event.preventDefault();
+                    alert('Time not selected!!');
+                    return false;
+                }
+                p = document.getElementsByClassName("alt")[0];
+                ps = p.options[p.selectedIndex].value;
+                alt = ps;
+                if(ps.toString().localeCompare("-1")===0)
+                {
+                    event.preventDefault();
+                    alert('Altitude Range not selected!!');
+                    return false;
+                }
+                x ='lidar_abu/'+dat.toString()+'_'+tim.toString()+'_'+alt.toString()+'.png';
+                document.getElementsByClassName("img_out")[0].src=x;
+                document.getElementsByClassName("img_out")[0].alt="Data not available";
+            }
+        </script>
+    </body>
+</html>
